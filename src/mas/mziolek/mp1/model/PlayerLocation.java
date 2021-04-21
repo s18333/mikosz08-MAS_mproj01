@@ -55,9 +55,6 @@ public class PlayerLocation {
 
     @Override
     public String toString() {
-        return "PlayerLocation{" +
-                "localizationName='" + localizationName + '\'' +
-                ", coordinates= x:" + coordinates.x + " y:" + coordinates.y +
-                '}';
+        return String.format("%s at: x:%d | y:%d", getLocalizationName(), getCoordinates().x, getCoordinates().y);
     }
 }

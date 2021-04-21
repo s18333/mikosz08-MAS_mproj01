@@ -5,10 +5,10 @@ import mas.mziolek.mp1.model.exceptions.DataValidationException;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static mas.mziolek.mp1.model.enums.MemberStatus.ONLINE;
 
 public class GuildMember {
 
@@ -16,8 +16,8 @@ public class GuildMember {
     private int level;                                       //player's character level.
     private float reputationAwarded;                         //player points donated to the guild
 
-    private String nickname;                            //player's nickname.
-    private String messageOfTheDay;                     //player's day message
+    private String nickname;                                 //player's nickname.
+    private String messageOfTheDay;                          //player's day message
 
     private Set<String> playerClasses = new HashSet<>();     //player's character classes
     private PlayerLocation playerLocation;                   //player's current location on map
@@ -25,6 +25,8 @@ public class GuildMember {
     private MemberStatus status;                             //player online status
 
     private final static int STARTING_REP_POINTS = 0;        //default value of reputation points for every guild member
+
+    private static List<GuildMember> guildMembersExtent = new ArrayList<>();     //Class extension
 
     /**
      * Class constructor.
@@ -34,11 +36,13 @@ public class GuildMember {
         this.id = id;
         setLevel(level);
         setNickname(nickname);
-        this.reputationAwarded = STARTING_REP_POINTS;         //player always starts with 0 rep. awarded.
+        this.reputationAwarded = STARTING_REP_POINTS;
         addPlayerClass(playerClass);
         setPlayerLocation(playerLocation);
         setDateOfAccession(dateOfAccession);
         setStatus(status);
+
+        guildMembersExtent.add(this);
     }
 
     /**
@@ -50,11 +54,13 @@ public class GuildMember {
         setLevel(level);
         setNickname(nickname);
         setMessageOfTheDay(messageOfTheDay);
-        this.reputationAwarded = STARTING_REP_POINTS;        //player always starts with 0 rep. awarded.
+        this.reputationAwarded = STARTING_REP_POINTS;
         addPlayerClass(playerClass);
         setPlayerLocation(playerLocation);
         setDateOfAccession(dateOfAccession);
         setStatus(status);
+
+        guildMembersExtent.add(this);
     }
 
     /**
@@ -102,13 +108,13 @@ public class GuildMember {
     }
 
     public void addPlayerClass(String playerClass) {
-        ValidateEnteredString(playerClass, "class cannot be null or empty");
+        ValidateEnteredString(playerClass, "player class cannot be null or empty");
         this.playerClasses.add(playerClass);
     }
 
     public void removePlayerClass(String playerClass) {
 
-        ValidateEnteredString(playerClass, "class cannot be null or empty");
+        ValidateEnteredString(playerClass, "player class cannot be null or empty");
         if (playerClasses.size() <= 1) {
             throw new DataValidationException("cannot remove last player's class");
         }
@@ -193,9 +199,40 @@ public class GuildMember {
     }
 
     /**
+     * Class Extension.
+     */
+    public static List<GuildMember> getGuildMemberExtent() {
+        return Collections.unmodifiableList(guildMembersExtent);
+    }
+
+    /**
+     * Class Extension.
+     */
+    public static List<GuildMember> getRankingByLevel() {
+        return guildMembersExtent
+                .stream()
+                .sorted(Comparator.comparing(GuildMember::getLevel).reversed())
+                .collect(Collectors.toList());
+    }
+
+    public static List<GuildMember> getRankingByRepPoints() {
+        return guildMembersExtent
+                .stream()
+                .sorted(Comparator.comparing(GuildMember::getReputationAwarded).reversed())
+                .collect(Collectors.toList());
+    }
+
+    public static List<GuildMember> getOnlineMembers() {
+        return guildMembersExtent
+                .stream()
+                .filter(guildMember -> guildMember.getStatus() == ONLINE)
+                .collect(Collectors.toList());
+    }
+
+    /**
      * Validation utilities.
      */
-    //Checks if given string is null or empty/blank. Can throw DataValidationException
+    //Checks if given string is null or empty/blank.
     private void ValidateEnteredString(String toValidate, String errorMessage) {
         if (toValidate == null || toValidate.trim().isBlank()) {
             throw new DataValidationException(errorMessage);
@@ -204,16 +241,8 @@ public class GuildMember {
 
     @Override
     public String toString() {
-        return "GuildMember{" +
-                "id=" + id +
-                ", level=" + level +
-                ", reputationAwarded=" + reputationAwarded +
-                ", nickname='" + nickname + '\'' +
-                ", messageOfTheDay='" + messageOfTheDay + '\'' +
-                ", playerClasses=" + playerClasses +
-                ", playerLocation=" + playerLocation +
-                ", dateOfAccession=" + dateOfAccession +
-                ", status=" + status +
-                '}';
+        return String.format("Nick:%s.  %s   %s  Level:%d    rep: %d    ~~%s~~   Location: %s    joined(%s) %s"
+                , getId(), getNickname(), getPlayerClasses(), getLevel(), (int) getReputationAwarded(), getMessageOfTheDay().orElse("no message for today!"), getPlayerLocation(), getDateOfAccession(), getStatus());
+
     }
 }
