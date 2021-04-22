@@ -1,3 +1,4 @@
+import mas.mziolek.mp1.model.ExtentManager;
 import mas.mziolek.mp1.model.GuildMember;
 import mas.mziolek.mp1.model.PlayerLocation;
 import mas.mziolek.mp1.model.enums.MemberStatus;
@@ -14,27 +15,27 @@ public class Main {
 
 
     public static void main(String[] args) {
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        System.out.println("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 
         List<GuildMember> qATesters = createTestMembers();
 
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        System.out.println("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 
         testEqualsAndHashCode(qATesters.get(0), qATesters.get(1), qATesters.get(2));
 
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        System.out.println("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 
         testClassMethods();
 
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        System.out.println("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 
         extensionLoadingSavingTest();
 
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        System.out.println("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 
         getterSetterTest(qATesters.get(0));
 
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        System.out.println("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
     }
 
     private static List<GuildMember> createTestMembers() {
@@ -112,12 +113,12 @@ public class Main {
 
         System.out.println("---Extent save&load TEST---");
         GuildMember.getGuildMemberExtent().forEach(System.out::println);
-        GuildMember.saveExtent();
+        ExtentManager.saveExtent();
         System.out.println("Saved " + GuildMember.getGuildMemberExtent().size() + " members.");
         GuildMember.clearExtension();
         System.out.println("Cleared, now we have " + GuildMember.getGuildMemberExtent().size() + " members.");
         System.out.println(GuildMember.getGuildMemberExtent());
-        GuildMember.loadExtent();
+        ExtentManager.loadExtent();
         System.out.println("Loaded " + GuildMember.getGuildMemberExtent().size() + " members.");
         GuildMember.getGuildMemberExtent().forEach(System.out::println);
     }

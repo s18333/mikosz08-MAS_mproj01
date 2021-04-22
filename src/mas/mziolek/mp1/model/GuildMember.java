@@ -26,10 +26,8 @@ public class GuildMember implements Serializable {
     private MemberStatus status;                                                            //player online status
 
     private final static int STARTING_REP_POINTS = 0;                                       //default value of reputation points for every guild member - class attribute
-    private final static String EXTENT_FILE_PATH = "save_data/guild_member.ser";            //Save path for our extent                                  - class attribute
 
     private static List<GuildMember> guildMembersExtent = new ArrayList<>();                //Class extension
-
 
     /**
      * Class constructor.
@@ -211,6 +209,13 @@ public class GuildMember implements Serializable {
         return Collections.unmodifiableList(guildMembersExtent);
     }
 
+    public static void setGuildMembersExtent(List<GuildMember> extent) {
+        if (extent == null) {
+            throw new DataValidationException("extent cannot be null");
+        }
+        GuildMember.guildMembersExtent = extent;
+    }
+
     /**
      * Extension Methods. - class methods
      */
@@ -267,7 +272,7 @@ public class GuildMember implements Serializable {
      */
     @Override
     public String toString() {
-        return String.format("%s.   Nick:  %s   %s  Level:%d    rep: %d    ~~%s~~   Location: %s    joined(%s) (%s)"
+        return String.format("%d.   Nick:  %s   %s  Level:%d    rep: %d    ~~%s~~   Location: %s    joined(%s) (%s)"
                 , getId(), getNickname(), getPlayerClasses(), getLevel(), (int) getReputationAwarded(),
                 getMessageOfTheDay().orElse("no message for today!"), getPlayerLocation(), getDateOfAccession(), getStatus());
 
@@ -295,22 +300,6 @@ public class GuildMember implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(id, level, reputationAwarded, nickname, messageOfTheDay, playerClasses, playerLocation, dateOfAccession, status);
-    }
-
-    public static void saveExtent() {
-        try (ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(EXTENT_FILE_PATH))) {
-            output.writeObject(guildMembersExtent);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void loadExtent() {
-        try (ObjectInputStream output = new ObjectInputStream(new FileInputStream(EXTENT_FILE_PATH))) {
-            guildMembersExtent = (List<GuildMember>) output.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
     }
 
 }
