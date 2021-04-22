@@ -65,7 +65,8 @@ public class PlayerLocation implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PlayerLocation otherLoc = (PlayerLocation) o;
-        return localizationName.equals(otherLoc.localizationName) && coordinates.equals(otherLoc.coordinates);
+        return localizationName.equals(otherLoc.localizationName) &&
+                coordinates.equals(otherLoc.coordinates);
     }
 
     @Override

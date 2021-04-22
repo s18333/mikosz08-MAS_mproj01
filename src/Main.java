@@ -13,8 +13,8 @@ import java.util.List;
 
 public class Main {
 
-
     public static void main(String[] args) {
+
         System.out.println("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 
         List<GuildMember> qATesters = createTestMembers();
@@ -52,7 +52,7 @@ public class Main {
 
         GuildMember gM4 = new GuildMember(3, 99, "Artas", "Priest", new PlayerLocation("Ragefire Chasm", 144, -59), LocalDate.of(2020, 4, 4), MemberStatus.OFFLINE);
         gM4.addReputationPoints(240);
-        gM4.setMessageOfTheDay("Hi!");
+        gM4.setMessageOfTheDay("hi! how you guys doin?");
 
         testMembers.add(gM1);
         testMembers.add(gM2);
@@ -67,10 +67,13 @@ public class Main {
 
     private static void testClassMethods() {
         System.out.println("---ClassMethodTEST---");
+
         System.out.println("Ranking by Level:");
         GuildMember.getRankingByLevel().forEach(System.out::println);
+
         System.out.println("Online members:");
         GuildMember.getOnlineMembers().forEach(System.out::println);
+
         System.out.println("Ranking by reputation:");
         GuildMember.getRankingByRepPoints().forEach(System.out::println);
     }
@@ -113,18 +116,23 @@ public class Main {
 
         System.out.println("---Extent save&load TEST---");
         GuildMember.getGuildMemberExtent().forEach(System.out::println);
+
         ExtentManager.saveExtent();
         System.out.println("Saved " + GuildMember.getGuildMemberExtent().size() + " members.");
+
         GuildMember.clearExtension();
         System.out.println("Cleared, now we have " + GuildMember.getGuildMemberExtent().size() + " members.");
         System.out.println(GuildMember.getGuildMemberExtent());
+
         ExtentManager.loadExtent();
         System.out.println("Loaded " + GuildMember.getGuildMemberExtent().size() + " members.");
+
         GuildMember.getGuildMemberExtent().forEach(System.out::println);
     }
 
     private static void getterSetterTest(GuildMember qualityAssurance) {
         System.out.println("---OtherTESTS---");
+
         GuildMember qA = qualityAssurance;
 
         qA.setNickname("adam małysz");

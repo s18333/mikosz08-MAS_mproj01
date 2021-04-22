@@ -13,21 +13,21 @@ import static mas.mziolek.mp1.model.enums.MemberStatus.ONLINE;
 
 public class GuildMember implements Serializable {
 
-    private long id;                                                                        //player's member ID
-    private int level;                                                                      //player's character level.
-    private float reputationAwarded;                                                        //player points donated to the guild
+    private long id;                                                                                                    //player's member ID
+    private int level;                                                                                                  //player's character level.
+    private float reputationAwarded;                                                                                    //player's points donated to the guild
 
-    private String nickname;                                                                //player's nickname.
-    private String messageOfTheDay;                                                         //player's day message
+    private String nickname;                                                                                            //player's nickname.
+    private String messageOfTheDay;                                                                                     //player's day message
 
-    private Set<String> playerClasses = new HashSet<>();                                    //player's character classes
-    private PlayerLocation playerLocation;                                                  //player's current location on map
-    private LocalDate dateOfAccession;                                                      //date the player joined the guild
-    private MemberStatus status;                                                            //player online status
+    private Set<String> playerClasses = new HashSet<>();                                                                //player's character classes
+    private PlayerLocation playerLocation;                                                                              //player's current location on map
+    private LocalDate dateOfAccession;                                                                                  //date the player joined the guild
+    private MemberStatus status;                                                                                        //player online status
 
-    private final static int STARTING_REP_POINTS = 0;                                       //default value of reputation points for every guild member - class attribute
+    private final static int STARTING_REP_POINTS = 0;                                                                   //default value of reputation points for every guild member - class attribute
 
-    private static List<GuildMember> guildMembersExtent = new ArrayList<>();                //Class extension
+    private static List<GuildMember> guildMembersExtent = new ArrayList<>();                                            //Class extension
 
     /**
      * Class constructor.
@@ -35,13 +35,15 @@ public class GuildMember implements Serializable {
     public GuildMember(long id, int level, String nickname, String playerClass,
                        PlayerLocation playerLocation, LocalDate dateOfAccession, MemberStatus status) {
         this.id = id;
+        this.reputationAwarded = STARTING_REP_POINTS;
+
         setLevel(level);
         setNickname(nickname);
-        this.reputationAwarded = STARTING_REP_POINTS;
-        addPlayerClass(playerClass);
         setPlayerLocation(playerLocation);
         setDateOfAccession(dateOfAccession);
         setStatus(status);
+
+        addPlayerClass(playerClass);
 
         guildMembersExtent.add(this);
     }
@@ -52,14 +54,15 @@ public class GuildMember implements Serializable {
     public GuildMember(long id, int level, String nickname, String messageOfTheDay, String playerClass,
                        PlayerLocation playerLocation, LocalDate dateOfAccession, MemberStatus status) {
         this.id = id;
+        this.reputationAwarded = STARTING_REP_POINTS;
         setLevel(level);
         setNickname(nickname);
         setMessageOfTheDay(messageOfTheDay);
-        this.reputationAwarded = STARTING_REP_POINTS;
-        addPlayerClass(playerClass);
         setPlayerLocation(playerLocation);
         setDateOfAccession(dateOfAccession);
         setStatus(status);
+
+        addPlayerClass(playerClass);
 
         guildMembersExtent.add(this);
     }
@@ -260,7 +263,6 @@ public class GuildMember implements Serializable {
     /**
      * Validation utilities.
      */
-    //Checks if given string is null or empty/blank.
     private void ValidateEnteredString(String toValidate, String errorMessage) {
         if (toValidate == null || toValidate.trim().isBlank()) {
             throw new DataValidationException(errorMessage);
@@ -274,7 +276,8 @@ public class GuildMember implements Serializable {
     public String toString() {
         return String.format("%d.   Nick:  %s   %s  Level:%d    rep: %d    ~~%s~~   Location: %s    joined(%s) (%s)"
                 , getId(), getNickname(), getPlayerClasses(), getLevel(), (int) getReputationAwarded(),
-                getMessageOfTheDay().orElse("no message for today!"), getPlayerLocation(), getDateOfAccession(), getStatus());
+                getMessageOfTheDay().orElse("no message for today!"),
+                getPlayerLocation(), getDateOfAccession(), getStatus());
 
     }
 
@@ -299,7 +302,8 @@ public class GuildMember implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, level, reputationAwarded, nickname, messageOfTheDay, playerClasses, playerLocation, dateOfAccession, status);
+        return Objects.hash(id, level, reputationAwarded, nickname,
+                messageOfTheDay, playerClasses, playerLocation, dateOfAccession, status);
     }
 
 }
