@@ -2,73 +2,160 @@ import mas.mziolek.mp1.model.GuildMember;
 import mas.mziolek.mp1.model.PlayerLocation;
 import mas.mziolek.mp1.model.enums.MemberStatus;
 
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Main {
 
+
     public static void main(String[] args) {
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
-        GuildMember gm = new GuildMember(1, 15, "mikosz08", "Warlock",
-                new PlayerLocation("Ragefire Chasm", 15, -9), LocalDate.of(2020, 1, 1), MemberStatus.ONLINE);
+        List<GuildMember> qATesters = createTestMembers();
 
-        GuildMember gm2 = new GuildMember(2, 16, "Gutek", "Warrior",
-                new PlayerLocation("Ragefire Chasm", 64, -34), LocalDate.of(2020, 2, 2), MemberStatus.ONLINE);
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
-        GuildMember gm3 = new GuildMember(3, 32, "Arnold", "Monk",
-                new PlayerLocation("Ragefire Chasm", -415, -9), LocalDate.of(2020, 3, 3), MemberStatus.ONLINE);
+        testEqualsAndHashCode(qATesters.get(0), qATesters.get(1), qATesters.get(2));
 
-        GuildMember gm4 = new GuildMember(4, 99, "Artas", "Priest",
-                new PlayerLocation("Ragefire Chasm", 144, -59), LocalDate.of(2020, 4, 4), MemberStatus.ONLINE);
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
-        gm.setMessageOfTheDay("hello");
-        gm2.setMessageOfTheDay("lfr 1 person for dungeon xyz");
-        gm3.setMessageOfTheDay("wtb 50x materials for this super magic sword");
-        gm4.setMessageOfTheDay("ostrze mrozu jest głodne");
+        testClassMethods();
 
-        System.out.println(gm);
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
-        gm.setNickname("mikosz09");
+        extensionLoadingSavingTest();
 
-        gm.setLevel(56);
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
-        System.out.println(gm.getPlayerClasses());
-        gm.addPlayerClass("Rune Walker");
-        gm.removePlayerClass("Warlock");
+        getterSetterTest(qATesters.get(0));
 
-        System.out.println("Message: " + gm.getMessageOfTheDay().orElse("message of the day"));
-        gm.setMessageOfTheDay(null);
-        System.out.println("Message: " + gm.getMessageOfTheDay().orElse("message of the day"));
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    }
 
-        System.out.println(gm.getReputationAwarded());
-        gm.setReputationAwarded(500);
-        gm.setReputationAwarded(500);
-        System.out.println(gm.getReputationAwarded());
+    private static List<GuildMember> createTestMembers() {
+        List<GuildMember> testMembers = new ArrayList<>();
 
-        System.out.println(gm.getDateOfAccession());
+        GuildMember gM1 = new GuildMember(1, 16, "Robert", "Student", new PlayerLocation("Dire Maul", 64, -34), LocalDate.of(2020, 2, 2), MemberStatus.ONLINE);
+        gM1.setMessageOfTheDay(null);
 
-        System.out.println(gm.getStatus());
-        gm.setStatus(MemberStatus.OFFLINE);
-        System.out.println(gm.getStatus());
+        GuildMember gM2 = new GuildMember(1, 16, "Robert", "Student", new PlayerLocation("Dire Maul", 64, -34), LocalDate.of(2020, 2, 2), MemberStatus.ONLINE);
 
-        System.out.println(gm.getDaysOfService());
+        GuildMember gM3 = new GuildMember(2, 32, "Arnold", "Monk", new PlayerLocation("Schoolmance", -415, -9), LocalDate.of(2020, 3, 3), MemberStatus.AFK);
+        gM3.addReputationPoints(750);
+        gM3.setMessageOfTheDay("WTB Magic Super Sword");
 
-        System.out.println(gm.getPlayerLocation());
-        gm.setPlayerLocation(new PlayerLocation("Stormwind", 123, 321));
-        System.out.println(gm.getPlayerLocation());
+        GuildMember gM4 = new GuildMember(3, 99, "Artas", "Priest", new PlayerLocation("Ragefire Chasm", 144, -59), LocalDate.of(2020, 4, 4), MemberStatus.OFFLINE);
+        gM4.addReputationPoints(240);
+        gM4.setMessageOfTheDay("Hi!");
 
-        gm.setReputationAwarded(123);
-        gm2.setReputationAwarded(1323);
-        gm3.setReputationAwarded(5);
-        gm4.setReputationAwarded(14323);
+        testMembers.add(gM1);
+        testMembers.add(gM2);
+        testMembers.add(gM3);
+        testMembers.add(gM4);
 
-        System.out.println(gm);
-        System.out.println('\n');
+        System.out.println("[CREATED " + GuildMember.getGuildMemberExtent().size() + " MEMBERS]");
+        GuildMember.getGuildMemberExtent().forEach(System.out::println);
+
+        return testMembers;
+    }
+
+    private static void testClassMethods() {
+        System.out.println("---ClassMethodTEST---");
+        System.out.println("Ranking by Level:");
         GuildMember.getRankingByLevel().forEach(System.out::println);
-        System.out.println('\n');
-        GuildMember.getRankingByRepPoints().forEach(System.out::println);
-        System.out.println('\n');
+        System.out.println("Online members:");
         GuildMember.getOnlineMembers().forEach(System.out::println);
+        System.out.println("Ranking by reputation:");
+        GuildMember.getRankingByRepPoints().forEach(System.out::println);
+    }
+
+    private static void testEqualsAndHashCode(GuildMember gM1, GuildMember gM2, GuildMember gM3) {
+
+        System.out.println("[---Equals&HashCodeTEST---]\n");
+
+        GuildMember gmTester = gM1;
+
+        System.out.println("(gmTester = gM1)");
+        System.out.println("-gmTester & gM1-");
+        System.out.println("==  \t\t" + (gmTester == gM1));
+        System.out.println("hash\t\t" + (gmTester.hashCode() == gM1.hashCode()));
+        System.out.println("equals\t\t" + (gmTester.equals(gM1)));
+
+        System.out.println("\n(other obj with same values)");
+        System.out.println("-gmTester & gM2-");
+        System.out.println("==  \t\t" + (gmTester == gM2));
+        System.out.println("hash\t\t" + (gmTester.hashCode() == gM2.hashCode()));
+        System.out.println("equals\t\t" + (gmTester.equals(gM2)));
+
+        System.out.println("\n(other obj with different values)");
+        System.out.println("-gmTester & gM3-");
+        System.out.println("==  \t\t" + (gmTester == gM3));
+        System.out.println("hash\t\t" + (gmTester.hashCode() == gM3.hashCode()));
+        System.out.println("equals\t\t" + (gmTester.equals(gM3)));
+
+    }
+
+    private static void extensionLoadingSavingTest() {
+        File myObj = new File("save_data/guild_member.ser");
+        try {
+            if (myObj.createNewFile()) {
+                System.out.println("File created: " + myObj.getName());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("---Extent save&load TEST---");
+        GuildMember.getGuildMemberExtent().forEach(System.out::println);
+        GuildMember.saveExtent();
+        System.out.println("Saved " + GuildMember.getGuildMemberExtent().size() + " members.");
+        GuildMember.clearExtension();
+        System.out.println("Cleared, now we have " + GuildMember.getGuildMemberExtent().size() + " members.");
+        System.out.println(GuildMember.getGuildMemberExtent());
+        GuildMember.loadExtent();
+        System.out.println("Loaded " + GuildMember.getGuildMemberExtent().size() + " members.");
+        GuildMember.getGuildMemberExtent().forEach(System.out::println);
+    }
+
+    private static void getterSetterTest(GuildMember qualityAssurance) {
+        System.out.println("---OtherTESTS---");
+        GuildMember qA = qualityAssurance;
+
+        qA.setNickname("adam małysz");
+        qA.setDateOfAccession(LocalDate.now());
+        qA.setLevel(15);
+        qA.setId(9);
+        qA.setStatus(MemberStatus.AFK);
+        qA.setPlayerLocation(new PlayerLocation("Sweet Home", new Point(12, 34)));
+        qA.setMessageOfTheDay("hello there");
+        qA.addPlayerClass("Student");
+
+        /*
+        qA.setNickname("");
+        qA.setNickname(null);
+        qA.setDateOfAccession(null);
+        qA.setLevel(0);
+        qA.setId(-9);
+        qA.setStatus(null);
+        qA.setPlayerLocation(null);
+        qA.setMessageOfTheDay("");
+        */
+
+        System.out.println(qA.getDaysOfService());
+        System.out.println(qA.getDateOfAccession());
+        System.out.println(qA.getStatus());
+        System.out.println(qA.getDaysOfService());
+        System.out.println(qA.getMessageOfTheDay().orElse("No Message"));
+        System.out.println(qA.getPlayerLocation());
+        System.out.println(qA.getNickname());
+        System.out.println(qA.getLevel());
+        System.out.println(qA.getId());
+        System.out.println(qA.getPlayerClasses());
     }
 
 }

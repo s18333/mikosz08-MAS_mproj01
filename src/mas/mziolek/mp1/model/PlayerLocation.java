@@ -3,8 +3,10 @@ package mas.mziolek.mp1.model;
 import mas.mziolek.mp1.model.exceptions.DataValidationException;
 
 import java.awt.*;
+import java.io.Serializable;
+import java.util.Objects;
 
-public class PlayerLocation {
+public class PlayerLocation implements Serializable {
     String localizationName;
     Point coordinates;
 
@@ -56,5 +58,18 @@ public class PlayerLocation {
     @Override
     public String toString() {
         return String.format("%s at: x:%d | y:%d", getLocalizationName(), getCoordinates().x, getCoordinates().y);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PlayerLocation otherLoc = (PlayerLocation) o;
+        return localizationName.equals(otherLoc.localizationName) && coordinates.equals(otherLoc.coordinates);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(localizationName, coordinates);
     }
 }
