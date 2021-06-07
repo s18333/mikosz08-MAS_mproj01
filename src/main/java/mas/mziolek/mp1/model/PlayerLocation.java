@@ -7,34 +7,34 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class PlayerLocation implements Serializable {
-    String localizationName;
-    Point coordinates;
+    private String locationName;
+    private Point coordinates;
 
     /**
      * Class constructor.
      */
     public PlayerLocation(String localizationName, Point coordinates) {
-        setLocalizationName(localizationName);
+        setLocationName(localizationName);
         setCoordinates(coordinates);
     }
 
     public PlayerLocation(String localizationName, int x, int y) {
-        setLocalizationName(localizationName);
+        setLocationName(localizationName);
         setCoordinates(x, y);
     }
 
     /**
      * Localization Name.
      */
-    public String getLocalizationName() {
-        return localizationName;
+    public String getLocationName() {
+        return locationName;
     }
 
-    public void setLocalizationName(String localizationName) {
-        if (localizationName == null || localizationName.trim().isBlank()) {
+    public void setLocationName(String locationName) {
+        if (locationName == null || locationName.trim().isBlank()) {
             throw new DataValidationException("localization name cannot be null or empty");
         }
-        this.localizationName = localizationName;
+        this.locationName = locationName;
     }
 
     /**
@@ -55,22 +55,27 @@ public class PlayerLocation implements Serializable {
         this.coordinates = new Point(x, y);
     }
 
+    /**
+     * toString.
+     */
     @Override
     public String toString() {
-        return String.format("%s at: x:%d | y:%d", getLocalizationName(), getCoordinates().x, getCoordinates().y);
+        return String.format("%s at: x:%d | y:%d", getLocationName(), getCoordinates().x, getCoordinates().y);
     }
-
+    /**
+     * Equals and HashCode.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PlayerLocation otherLoc = (PlayerLocation) o;
-        return localizationName.equals(otherLoc.localizationName) &&
+        return locationName.equals(otherLoc.locationName) &&
                 coordinates.equals(otherLoc.coordinates);
     }
-
     @Override
     public int hashCode() {
-        return Objects.hash(localizationName, coordinates);
+        return Objects.hash(locationName, coordinates);
     }
+
 }

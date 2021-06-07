@@ -9,6 +9,8 @@ public class ExtentManager {
     public static void saveExtent() {
         try (ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(EXTENT_FILE_PATH))) {
             output.writeObject(GuildMember.getGuildMemberExtent());
+            output.writeObject(Guild.getGuildExtent());
+            output.writeObject(ApplicationForm.getApplicationFormExtent());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -17,6 +19,8 @@ public class ExtentManager {
     public static void loadExtent() {
         try (ObjectInputStream output = new ObjectInputStream(new FileInputStream(EXTENT_FILE_PATH))) {
             GuildMember.setGuildMembersExtent((List<GuildMember>) output.readObject());
+            Guild.setGuildExtent((List<Guild>) output.readObject());
+            ApplicationForm.setApplicationFormExtent((List<ApplicationForm>) output.readObject());
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }

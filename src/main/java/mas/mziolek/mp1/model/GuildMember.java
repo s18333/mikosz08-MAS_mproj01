@@ -13,21 +13,26 @@ import static mas.mziolek.mp1.model.enums.MemberStatus.ONLINE;
 
 public class GuildMember implements Serializable {
 
-    private long id;                                                                                                    //player's member ID
-    private int level;                                                                                                  //player's character level.
-    private float reputationAwarded;                                                                                    //player's points donated to the guild
+    private long id;
+    private int level;
+    private float reputationAwarded;
 
-    private String nickname;                                                                                            //player's nickname.
-    private String messageOfTheDay;                                                                                     //player's day message
+    private String nickname;
+    private String messageOfTheDay;
 
-    private Set<String> playerClasses = new HashSet<>();                                                                //player's character classes
-    private PlayerLocation playerLocation;                                                                              //player's current location on map
-    private LocalDate dateOfAccession;                                                                                  //date the player joined the guild
-    private MemberStatus status;                                                                                        //player online status
+    private final Set<String> playerClasses = new HashSet<>();
+    private PlayerLocation playerLocation;
+    private LocalDate dateOfAccession;
+    private MemberStatus status;
 
-    private final static int STARTING_REP_POINTS = 0;                                                                   //default value of reputation points for every guild member - class attribute
+    private final static int STARTING_REP_POINTS = 0;
 
-    private static List<GuildMember> guildMembersExtent = new ArrayList<>();                                            //Class extension
+    private final Set<ApplicationForm> applicationForms = new HashSet<>();
+    private Guild memberGuild;
+
+    private static List<GuildMember> guildMembersExtent = new ArrayList<>();//Class extension
+
+    //region Constructors
 
     /**
      * Class constructor.
@@ -36,13 +41,11 @@ public class GuildMember implements Serializable {
                        PlayerLocation playerLocation, LocalDate dateOfAccession, MemberStatus status) {
         this.id = id;
         this.reputationAwarded = STARTING_REP_POINTS;
-
         setLevel(level);
         setNickname(nickname);
         setPlayerLocation(playerLocation);
         setDateOfAccession(dateOfAccession);
         setStatus(status);
-
         addPlayerClass(playerClass);
 
         guildMembersExtent.add(this);
@@ -61,11 +64,13 @@ public class GuildMember implements Serializable {
         setPlayerLocation(playerLocation);
         setDateOfAccession(dateOfAccession);
         setStatus(status);
-
         addPlayerClass(playerClass);
 
         guildMembersExtent.add(this);
     }
+    //endregion
+
+    //region MP1 Methods
 
     /**
      * ID.
@@ -259,6 +264,72 @@ public class GuildMember implements Serializable {
     public static void clearExtension() {
         guildMembersExtent.clear();
     }
+    //endregion
+
+    //region Guild Association
+    public Guild getGuild() {
+        return this.memberGuild;
+    }
+
+    public void setGuild(Guild newGuild) {
+
+        if (this.memberGuild == newGuild) {
+            return;
+        }
+
+        if (this.memberGuild != null) {
+
+            Guild tmpGuild = this.memberGuild;
+            this.memberGuild = null;
+            tmpGuild.removeGuildMember(this);
+
+            if (newGuild != null) {
+                this.memberGuild = newGuild;
+                newGuild.addGuildMember(this);
+            }
+
+        } else {
+            this.memberGuild = newGuild;
+            newGuild.addGuildMember(this);
+        }
+    }
+    //endregion
+
+    //region Application Form Association
+    public Set<ApplicationForm> getApplicationForms() {
+        return Collections.unmodifiableSet(applicationForms);
+    }
+
+    public void addApplication(ApplicationForm newApplicationForm) {
+
+        if (newApplicationForm == null) {
+            throw new DataValidationException("ApplicationForm is required!");
+        }
+
+        if (this.applicationForms.contains(newApplicationForm)) {
+            return;
+        }
+
+        if (newApplicationForm.getGuildMember() != this) {
+            throw new DataValidationException("Member is not related to this application!");
+        }
+
+        this.applicationForms.add(newApplicationForm);
+    }
+
+    public void removeApplicationForm(ApplicationForm applicationForm) {
+
+        if (!this.applicationForms.contains(applicationForm)) {
+            return;
+        }
+
+        this.applicationForms.remove(applicationForm);
+        applicationForm.delete();
+
+    }
+    //endregion
+
+    //region Utilities
 
     /**
      * Validation utilities.
@@ -305,5 +376,6 @@ public class GuildMember implements Serializable {
         return Objects.hash(id, level, reputationAwarded, nickname,
                 messageOfTheDay, playerClasses, playerLocation, dateOfAccession, status);
     }
+    //endregion
 
 }

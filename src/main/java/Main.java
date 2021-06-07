@@ -155,16 +155,16 @@ public class Main {
         qA.setMessageOfTheDay("");
         */
 
-        System.out.println(qA.getDaysOfService());
-        System.out.println(qA.getDateOfAccession());
-        System.out.println(qA.getStatus());
-        System.out.println(qA.getDaysOfService());
-        System.out.println(qA.getMessageOfTheDay().orElse("No Message"));
-        System.out.println(qA.getPlayerLocation());
-        System.out.println(qA.getNickname());
-        System.out.println(qA.getLevel());
-        System.out.println(qA.getId());
-        System.out.println(qA.getPlayerClasses());
+        System.out.println("service: " + (qA.getDaysOfService()));
+        System.out.println("accession: " + qA.getDateOfAccession());
+        System.out.println("status: " + qA.getStatus());
+
+        System.out.println("message: " + qA.getMessageOfTheDay().orElse("No Message"));
+        System.out.println("location: " + qA.getPlayerLocation());
+        System.out.println("nickname: " + qA.getNickname());
+        System.out.println("level: " + qA.getLevel());
+        System.out.println("id: " + qA.getId());
+        System.out.println("class: " + qA.getPlayerClasses());
     }
 
 }
